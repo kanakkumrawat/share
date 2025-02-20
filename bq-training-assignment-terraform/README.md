@@ -147,10 +147,10 @@ terraform destroy --auto-approve
 
 ## Requirements
 
-| Name                                                                     | Version   |
-| ------------------------------------------------------------------------ | --------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | >= 1.10.1 |
-| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | >= 5.70.0 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.10.1 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.70.0 |
 
 ## Providers
 
