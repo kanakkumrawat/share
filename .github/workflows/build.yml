@@ -27,14 +27,14 @@ jobs:
       with:
         terraform_version: '1.0.11'  # Specify your desired Terraform version
 
-    # Cache Terraform providers and modules
-    - name: Cache Terraform modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.terraform.d
-          .terraform
-        key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf') }}
+    # # Cache Terraform providers and modules
+    # - name: Cache Terraform modules
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: |
+    #       ~/.terraform.d
+    #       .terraform
+    #     key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf') }}
         
     # Configure AWS credentials (this is if you are using AWS)
     - name: Set up AWS credentials
