@@ -24,8 +24,6 @@ jobs:
     # Set up Terraform
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: '1.0.11'  # Specify your desired Terraform version
 
     # # Cache Terraform providers and modules
     # - name: Cache Terraform modules
