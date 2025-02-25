@@ -2,6 +2,15 @@ name: Terraform Apply
 
 on:
   workflow_dispatch: # Requires manual approval
+    inputs:
+      environment:
+        description: "Select the deployment environment"
+        required: true
+        default: "production"
+      apply_terraform:
+        description: "Run terraform apply?"
+        required: true
+        type: boolean
 
 jobs:
   terraform:
