@@ -19,7 +19,7 @@ jobs:
       id-token: write
       contents: read
 
-    environment: production # Requires manual approval before running
+    environment: ${{ inputs.environment }} # Dynamically select environment
 
     defaults:
       run:
@@ -42,4 +42,5 @@ jobs:
       run: terraform init
 
     - name: Terraform Apply
+      if: inputs.apply_terraform == 'true' # Only run if user selected "true"
       run: terraform apply -auto-approve
