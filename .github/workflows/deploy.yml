@@ -42,5 +42,5 @@ jobs:
       run: terraform init
 
     - name: Terraform Apply
-      if: inputs.apply_terraform == 'true' # Only run if user selected "true"
+      if: ${{ inputs.apply_terraform }} # Correct boolean check
       run: terraform apply -auto-approve
