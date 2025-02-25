@@ -50,9 +50,7 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
 
-    # Apply the Terraform plan (ensure to confirm apply if it's in production)
-    - name: Terraform Apply
-      run: terraform apply --auto-approve
-
-    - name: Terraform Destroy
-      run: terraform destroy --auto-approve
+    # Validate the Terraform plan (ensure to confirm apply if it's in production)
+    - name: Terraform Validate
+      run: terraform validate
+    
