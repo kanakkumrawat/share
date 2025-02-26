@@ -1,45 +1,50 @@
 name: Terraform Apply
 
 on:
-  pull_request_review:
-    types: [submitted]
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Terraform CI/CD"]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      approval:
+        description: 'Type "yes" to apply changes'
+        required: true
+        default: 'no'
 
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
-    if: ${{ github.event.review.state == 'approved' }} # Only run if the review is approved
 
     steps:
       # Checkout the code from the repository
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Configure AWS credentials
-    - name: Configure AWS credentials using OIDC
-      uses: aws-actions/configure-aws-credentials@v3
-      with:
-        role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
-        aws-region: us-east-1
+      # Configure AWS credentials
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
+          aws-region: us-east-1
 
-    # Set up Terraform
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v3
+      # Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
 
-    # Manual approval step
-    - name: Request approval to apply changes
-      id: approval
-      run: |
-        if [[ "${{ github.event.inputs.approval }}" != "yes" ]]; then
-          echo "Approval input was not 'yes'. Exiting the workflow."
-          exit 1
-        fi
+      # Manual approval step
+      - name: Check approval to apply changes
+        id: approval
+        run: |
+          if [[ "${{ github.event.inputs.approval }}" != "yes" ]]; then
+            echo "Approval input was not 'yes'. Exiting the workflow."
+            exit 1
+          fi
 
-    # Initialize Terraform
-    - name: Terraform Init
-      run: terraform init
+      # Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
 
-    # Apply the Terraform plan to create the infrastructure
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
+      # Apply the Terraform plan to create the infrastructure
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
