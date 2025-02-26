@@ -2,7 +2,7 @@ name: Terraform Apply
 
 on:
   workflow_run:
-    workflows: ["Terraform CI/CD"]
+    workflows: [ "Terraform CI/CD" ]
     types:
       - completed
   workflow_dispatch:
