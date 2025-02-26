@@ -16,6 +16,9 @@ on:
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     # Check if the first workflow has completed successfully
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
