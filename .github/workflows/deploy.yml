@@ -15,7 +15,7 @@ jobs:
       contents: read
     defaults:
       run:
-        working-directory: main
+        working-directory: bq-training-assignment-terraform
 
     steps:
     - name: Checkout code
