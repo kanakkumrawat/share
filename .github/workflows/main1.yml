@@ -9,10 +9,6 @@ on:
         options:
           - yes
           - no
-  workflow_run:
-    workflows: ["Terraform CI/CD"]
-    types:
-      - completed
 
 jobs:
   terraform-apply:
