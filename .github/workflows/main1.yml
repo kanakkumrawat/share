@@ -36,8 +36,7 @@ jobs:
       - name: Download tfplan artifact
         uses: actions/download-artifact@v4
         with:
-          name: tfplan
-          path: ./
+          name: terraformArtifactes
 
       # Wait for manual approval from the user
       - name: Wait for manual approval
@@ -57,4 +56,4 @@ jobs:
 
       # Apply the Terraform plan to create the infrastructure
       - name: Terraform Apply
-        run: terraform apply -auto-approve ./tfplan
+        run: terraform apply -auto-approve tfplan
