@@ -1,192 +1,192 @@
+# # name: Terraform CI/CD
+
+# # on:
+# #   pull_request:
+# #     branches:
+# #       - main
+# #   workflow_dispatch:
+# #     inputs:
+# #       approval:
+# #         description: 'Type "yes" to apply changes'
+# #         required: true
+
+# # jobs:
+# #   terraform-build:
+# #     runs-on: self-hosted
+# #     permissions:
+# #       id-token: write
+# #       contents: read
+
+# #     defaults:
+# #       run:
+# #         working-directory: bq-training-assignment-terraform
+
+# #     steps:
+# #     - name: Checkout code
+# #       uses: actions/checkout@v3
+
+# #     - name: Configure AWS credentials using OIDC
+# #       uses: aws-actions/configure-aws-credentials@v3
+# #       with:
+# #         role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
+# #         aws-region: us-east-1
+
+# #     - name: Set up Terraform
+# #       uses: hashicorp/setup-terraform@v3
+      
+# #     - name: Terraform Init
+# #       run: terraform init
+
+# #     - name: Terraform Plan
+# #       run: terraform plan
+
+# #     - name: Terraform Validate
+# #       run: terraform validate
+
+
+# #   terraform-apply:
+# #     needs: terraform-build
+# #     if: github.event_name == 'workflow_dispatch'
+# #     runs-on: self-hosted
+# #     permissions:
+# #       id-token: write
+# #       contents: read
+
+# #     defaults:
+# #       run:
+# #         working-directory: bq-training-assignment-terraform
+
+# #     steps:
+
+# #     - name: Checkout code
+# #       uses: actions/checkout@v3
+
+# #     - name: Configure AWS credentials using OIDC
+# #       uses: aws-actions/configure-aws-credentials@v3
+# #       with:
+# #         role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
+# #         aws-region: us-east-1
+
+# #     - name: Set up Terraform
+# #       uses: hashicorp/setup-terraform@v3
+
+# #     - name: Wait for manual approval
+# #       run: |
+# #         APPROVAL="${{ github.event.inputs.approval }}"
+# #         if [[ "$APPROVAL" != "yes" ]]; then
+# #           echo "Approval input was not 'yes'. Exiting the workflow."
+# #           exit 1
+# #         else
+# #           echo "Approval received. Proceeding with Terraform apply."
+# #         fi
+
+# #     - name: Terraform Init
+# #       run: terraform init
+
+# #     - name: Terraform Plan
+# #       run: terraform plan
+
+# #     - name: Terraform Validate
+# #       run: terraform validate
+
+# #     - name: Terraform Apply
+# #       run: terraform apply --auto-approve
+
+# #     - name: Terraform Destroy
+# #       run: terraform destroy --auto-approve
+
+
 # name: Terraform CI/CD
 
 # on:
 #   pull_request:
 #     branches:
-#       - main
-#   workflow_dispatch:
+#       - main  # Runs Terraform Plan on PRs to main branch
+
+#   workflow_dispatch:  # Manual trigger for Terraform Apply
 #     inputs:
-#       approval:
-#         description: 'Type "yes" to apply changes'
+#       environment:
+#         description: "Select environment (staging or deployment)"
 #         required: true
+#         default: "staging"
+#       apply_terraform:
+#         description: "Run Terraform Apply?"
+#         required: true
+#         type: boolean
 
 # jobs:
-#   terraform-build:
-#     runs-on: self-hosted
+#   terraform-plan:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         environment: [staging, deployment]  # Runs Terraform Plan in parallel for both
 #     permissions:
 #       id-token: write
 #       contents: read
+
+#     environment: ${{ matrix.environment }}  # Dynamically set environment
 
 #     defaults:
 #       run:
 #         working-directory: bq-training-assignment-terraform
 
 #     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v3
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-#     - name: Configure AWS credentials using OIDC
-#       uses: aws-actions/configure-aws-credentials@v3
-#       with:
-#         role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
-#         aws-region: us-east-1
+#       - name: Configure AWS credentials using OIDC
+#         uses: aws-actions/configure-aws-credentials@v3
+#         with:
+#           role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
+#           aws-region: us-east-1
 
-#     - name: Set up Terraform
-#       uses: hashicorp/setup-terraform@v3
-      
-#     - name: Terraform Init
-#       run: terraform init
+#       - name: Set up Terraform
+#         uses: hashicorp/setup-terraform@v3
 
-#     - name: Terraform Plan
-#       run: terraform plan
+#       - name: Terraform Init
+#         run: terraform init
 
-#     - name: Terraform Validate
-#       run: terraform validate
+#       - name: Terraform Plan
+#         run: terraform plan
 
+#       - name: Terraform Validate
+#         run: terraform validate
 
 #   terraform-apply:
-#     needs: terraform-build
-#     if: github.event_name == 'workflow_dispatch'
-#     runs-on: self-hosted
+#     needs: terraform-plan  # Runs only after Terraform Plan completes
+#     if: ${{ github.event.inputs.apply_terraform == 'true' }}  # Runs only if approved manually
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         environment: [staging, deployment]  # Runs Terraform Apply in parallel
 #     permissions:
 #       id-token: write
 #       contents: read
+
+#     environment: ${{ matrix.environment }}  # Requires manual approval per environment
 
 #     defaults:
 #       run:
 #         working-directory: bq-training-assignment-terraform
 
 #     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-#     - name: Checkout code
-#       uses: actions/checkout@v3
+#       - name: Configure AWS credentials using OIDC
+#         uses: aws-actions/configure-aws-credentials@v3
+#         with:
+#           role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
+#           aws-region: us-east-1
 
-#     - name: Configure AWS credentials using OIDC
-#       uses: aws-actions/configure-aws-credentials@v3
-#       with:
-#         role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
-#         aws-region: us-east-1
+#       - name: Set up Terraform
+#         uses: hashicorp/setup-terraform@v3
 
-#     - name: Set up Terraform
-#       uses: hashicorp/setup-terraform@v3
+#       - name: Terraform Init
+#         run: terraform init
 
-#     - name: Wait for manual approval
-#       run: |
-#         APPROVAL="${{ github.event.inputs.approval }}"
-#         if [[ "$APPROVAL" != "yes" ]]; then
-#           echo "Approval input was not 'yes'. Exiting the workflow."
-#           exit 1
-#         else
-#           echo "Approval received. Proceeding with Terraform apply."
-#         fi
+#       - name: Terraform Apply
+#         run: terraform apply --auto-approve
 
-#     - name: Terraform Init
-#       run: terraform init
-
-#     - name: Terraform Plan
-#       run: terraform plan
-
-#     - name: Terraform Validate
-#       run: terraform validate
-
-#     - name: Terraform Apply
-#       run: terraform apply --auto-approve
-
-#     - name: Terraform Destroy
-#       run: terraform destroy --auto-approve
-
-
-name: Terraform CI/CD
-
-on:
-  pull_request:
-    branches:
-      - main  # Runs Terraform Plan on PRs to main branch
-
-  workflow_dispatch:  # Manual trigger for Terraform Apply
-    inputs:
-      environment:
-        description: "Select environment (staging or deployment)"
-        required: true
-        default: "staging"
-      apply_terraform:
-        description: "Run Terraform Apply?"
-        required: true
-        type: boolean
-
-jobs:
-  terraform-plan:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [staging, deployment]  # Runs Terraform Plan in parallel for both
-    permissions:
-      id-token: write
-      contents: read
-
-    environment: ${{ matrix.environment }}  # Dynamically set environment
-
-    defaults:
-      run:
-        working-directory: bq-training-assignment-terraform
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
-          aws-region: us-east-1
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Plan
-        run: terraform plan
-
-      - name: Terraform Validate
-        run: terraform validate
-
-  terraform-apply:
-    needs: terraform-plan  # Runs only after Terraform Plan completes
-    if: ${{ github.event.inputs.apply_terraform == 'true' }}  # Runs only if approved manually
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [staging, deployment]  # Runs Terraform Apply in parallel
-    permissions:
-      id-token: write
-      contents: read
-
-    environment: ${{ matrix.environment }}  # Requires manual approval per environment
-
-    defaults:
-      run:
-        working-directory: bq-training-assignment-terraform
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
-          aws-region: us-east-1
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Apply
-        run: terraform apply --auto-approve
-
-      - name: Terraform Destroy
-        run: terraform destroy --auto-approve
+#       - name: Terraform Destroy
+#         run: terraform destroy --auto-approve
