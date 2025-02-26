@@ -60,8 +60,8 @@ jobs:
     - name: Upload tfplan artifact
       uses: actions/upload-artifact@v4
       with:
-        name: tfplan
-        path: ./
+        name: terraformArtifactes
+        path: tfplan
 
     # Validate the Terraform plan (ensure to confirm apply if it's in production)
     - name: Terraform Validate
