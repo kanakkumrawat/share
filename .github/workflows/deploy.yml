@@ -5,13 +5,16 @@ on:
     workflows: ["Terraform CI/CD"]
     types:
       - completed
+  workflow_dispatch:
+    inputs:
+      approval:
+        description: 'Type "yes" to apply changes'
+        required: true
+        default: 'no'
 
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
 
     steps:
       # Checkout the code from the repository
@@ -30,12 +33,10 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       # Manual approval step
-      - name: Request approval to apply changes
+      - name: Check approval to apply changes
         id: approval
         run: |
-          echo "Please type 'yes' to proceed with applying the Terraform changes."
-          read approval_input
-          if [[ "$approval_input" != "yes" ]]; then
+          if [[ "${{ github.event.inputs.approval }}" != "yes" ]]; then
             echo "Approval input was not 'yes'. Exiting the workflow."
             exit 1
           fi
