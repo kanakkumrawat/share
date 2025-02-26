@@ -15,42 +15,40 @@ jobs:
       contents: read
 
     steps:
-      # Checkout the code from the repository
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # Checkout the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # Configure AWS credentials using OIDC
-      - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
-          aws-region: us-east-1
+    # Configure AWS credentials using OIDC
+    - name: Configure AWS credentials using OIDC
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        role-to-assume: arn:aws:iam::522814707398:role/role-for-github-workflow
+        aws-region: us-east-1
 
-      # Set up Terraform
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+    # Set up Terraform
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
 
-      # Wait for manual approval from the user
-      - name: Wait for manual approval
-        run: |
-          APPROVAL="${{ github.event.inputs.approval }}"
-          if [[ "$APPROVAL" != "yes" ]]; then
-            echo "Approval input was not 'yes'. Exiting the workflow."
-            exit 1
-          else
-            echo "Approval received. Proceeding with Terraform apply."
-          fi
+    # Wait for manual approval from the user
+    - name: Wait for manual approval
+      run: |
+        APPROVAL="${{ github.event.inputs.approval }}"
+        if [[ "$APPROVAL" != "yes" ]]; then
+          echo "Approval input was not 'yes'. Exiting the workflow."
+          exit 1
+        else
+          echo "Approval received. Proceeding with Terraform apply."
+        fi
 
-      # Initialize Terraform
-      - name: Terraform Init
-        run: terraform init
+    # Initialize Terraform
+    - name: Terraform Init
+      run: terraform init
 
-      - name: Terraform Plan
-        run: terraform plan
+    # Terraform plan to see what changes are pending
+    - name: Terraform Plan
+      run: terraform plan
 
-      # Apply the Terraform plan to create the infrastructure
-      - name: Terraform Apply
-        run: terraform apply --auto-approve
-
-      - name: Terraform Destroy
-        run: terraform destroy --auto-approve
+    # Validate the Terraform plan (ensure to confirm apply if it's in production)
+    - name: Terraform Validate
+      run: terraform validate
