@@ -53,6 +53,9 @@ jobs:
       contents: read
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Wait for manual approval
       run: |
         APPROVAL="${{ github.event.inputs.approval }}"
