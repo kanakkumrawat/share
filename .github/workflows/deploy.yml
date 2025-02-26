@@ -9,6 +9,9 @@ on:
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       # Checkout the code from the repository
