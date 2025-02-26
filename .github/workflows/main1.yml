@@ -2,10 +2,11 @@ name: Terraform Apply
 
 on:
   workflow_run:
-    workflows: ["Terraform CI/CD"]
+    workflows: ["Terraform CI/CD"]  # Trigger on the successful completion of the first workflow
     types:
       - completed
-  workflow_dispatch:
+
+  workflow_dispatch:  # Manual trigger from GitHub UI for approval
     inputs:
       approval:
         description: 'Type "yes" to apply changes'
@@ -15,16 +16,16 @@ on:
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
+
+    # Check if the first workflow has completed successfully
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       # Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Configure AWS credentials
+      # Configure AWS credentials using OIDC
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -35,13 +36,15 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # Manual approval step
-      - name: Check approval to apply changes
+      # Wait for manual approval from the user
+      - name: Wait for manual approval
         id: approval
         run: |
           if [[ "${{ github.event.inputs.approval }}" != "yes" ]]; then
             echo "Approval input was not 'yes'. Exiting the workflow."
             exit 1
+          else
+            echo "Approval received. Proceeding with Terraform apply."
           fi
 
       # Initialize Terraform
@@ -50,8 +53,4 @@ jobs:
 
       # Apply the Terraform plan to create the infrastructure
       - name: Terraform Apply
-        run: terraform apply --auto-approve
-
-
-      - name: Terraform Desrroy
-        run: terraform destroy --auto-approve
+        run: terraform apply -auto-approve
