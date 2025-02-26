@@ -14,9 +14,6 @@ jobs:
       id-token: write
       contents: read
 
-    # Check if the first workflow has completed successfully
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
-
     steps:
       # Checkout the code from the repository
       - name: Checkout code
@@ -32,11 +29,6 @@ jobs:
       # Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
-
-      - name: Download tfplan artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: terraformArtifactes
 
       # Wait for manual approval from the user
       - name: Wait for manual approval
@@ -56,4 +48,4 @@ jobs:
 
       # Apply the Terraform plan to create the infrastructure
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve
