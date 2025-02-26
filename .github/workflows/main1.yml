@@ -33,6 +33,12 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Download tfplan artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplan
+          path: ./
+
       # Wait for manual approval from the user
       - name: Wait for manual approval
         id: approval
@@ -51,4 +57,4 @@ jobs:
 
       # Apply the Terraform plan to create the infrastructure
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve ./tfplan
