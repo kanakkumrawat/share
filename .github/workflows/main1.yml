@@ -15,6 +15,9 @@ on:
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       # Checkout the code from the repository
@@ -47,4 +50,8 @@ jobs:
 
       # Apply the Terraform plan to create the infrastructure
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply --auto-approve
+
+
+      - name: Terraform Desrroy
+        run: terraform destroy --auto-approve
