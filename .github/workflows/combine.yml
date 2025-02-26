@@ -63,6 +63,9 @@ jobs:
           echo "Approval received. Proceeding with Terraform apply."
         fi
 
+    - name: Terraform Plan
+      run: terraform plan
+
     - name: Terraform Apply
       run: terraform apply --auto-approve
 
