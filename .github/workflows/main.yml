@@ -1,4 +1,4 @@
-name: Terraform CI/CD
+name: Terraform Build
 
 on:
   pull_request:
@@ -54,9 +54,15 @@ jobs:
 
     # Terraform plan to see what changes are pending
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform plan -out=tfplan
+
+    # Upload the Terraform plan as an artifact for later use
+    - name: Upload tfplan artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: tfplan
+        path: tfplan
 
     # Validate the Terraform plan (ensure to confirm apply if it's in production)
     - name: Terraform Validate
       run: terraform validate
-    
