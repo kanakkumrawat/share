@@ -3,7 +3,7 @@ name: Terraform Build
 on:
   pull_request:
     branches:
-      - main # Trigger this on pull requests to the main branch
+      - main
 
 jobs:
   terraform:
@@ -30,23 +30,6 @@ jobs:
     # Set up Terraform
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
-
-    # # Cache Terraform providers and modules
-    # - name: Cache Terraform modules
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: |
-    #       ~/.terraform.d
-    #       .terraform
-    #     key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf') }}
-        
-    # Configure AWS credentials (this is if you are using AWS)
-    # - name: Set up AWS credentials
-    #   uses: aws-actions/configure-aws-credentials@v3
-    #   with:
-    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     aws-region: us-east-1
 
     # Initialize Terraform
     - name: Terraform Init
