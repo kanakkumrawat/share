@@ -1,11 +1,6 @@
 name: Terraform Apply
 
 on:
-  workflow_run:
-    workflows: ["Terraform CI/CD"]  # Trigger on the successful completion of the first workflow
-    types:
-      - completed
-
   workflow_dispatch:  # Manual trigger from GitHub UI for approval
     inputs:
       approval:
