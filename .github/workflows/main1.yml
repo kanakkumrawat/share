@@ -6,6 +6,10 @@ on:
       approval:
         description: 'Type "yes" to apply changes'
         required: true
+  workflow_run:
+    workflows: ["Terraform CI/CD"]
+    types:
+      - completed
 
 jobs:
   terraform-apply:
