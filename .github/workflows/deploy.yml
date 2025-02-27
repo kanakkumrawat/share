@@ -97,10 +97,10 @@ jobs:
       run: terraform workspace select staging || terraform workspace new staging
 
     - name: Terraform Region for accepeter
-      run: sed -i '/variable "aws_region_accepter"/,/}/s/\(default = "\)[^"]*\(".*\)/\1us-west-1\2/' main.tf
+      run: sed -i '/variable "aws_region_accepter"/,/}/s/\(default = "\)[^"]*\(".*\)/\1us-west-1\2/' variables.tf
 
     - name: Terraform Region for requester
-      run: sed -i '/variable "aws_region_requester"/,/}/s/\(default = "\)[^"]*\(".*\)/\1us-west-2\2/' main.tf
+      run: sed -i '/variable "aws_region_requester"/,/}/s/\(default = "\)[^"]*\(".*\)/\1us-west-2\2/' variables.tf
 
     - name: Terraform Plan
       run: terraform plan
