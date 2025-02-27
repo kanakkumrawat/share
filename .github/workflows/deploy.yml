@@ -97,7 +97,7 @@ jobs:
       run: terraform workspace select staging || terraform workspace new staging
 
     - name: Terraform Validate
-      run: terraform validate -var="aws_region_accepter=us-west-2" -var="aws_region_requester=us-west-1"
+      run: terraform validate
 
     - name: Terraform Plan
       run: terraform plan -var="aws_region_accepter=us-west-2" -var="aws_region_requester=us-west-1"
