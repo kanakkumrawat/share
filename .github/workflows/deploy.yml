@@ -96,23 +96,17 @@ jobs:
     - name: Terraform Workspace(staging)
       run: terraform workspace select staging || terraform workspace new staging
 
-    - name: Terraform Region for accepeter
-      run: sed -i '/variable "aws_region_accepter"/,/}/s/\(default = "\)[^"]*\(".*\)/\1us-west-1\2/' variables.tf
-
-    - name: Terraform Region for requester
-      run: sed -i '/variable "aws_region_requester"/,/}/s/\(default = "\)[^"]*\(".*\)/\1us-west-2\2/' variables.tf
-
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform -var="aws_region_accepter=us-west-1" -var="aws_region_requester=us-west-2" plan
 
     - name: Terraform Validate
       run: terraform validate
 
     - name: Terraform Apply
-      run: terraform apply --auto-approve
+      run: terraform apply -var="aws_region_accepter=us-west-1" -var="aws_region_requester=us-west-2" --auto-approve
 
     - name: Terraform Destroy
-      run: terraform destroy --auto-approve
+      run: terraform destroy -var="aws_region_accepter=us-west-1" -var="aws_region_requester=us-west-2" --auto-approve
 
 
 
