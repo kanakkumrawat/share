@@ -76,6 +76,9 @@ jobs:
     - name: Terraform Region for requester
       run: sed -i '/variable "aws_region_requester"/,/}/s/\(default = "\)[^"]*\(".*\)/\1us-west-2\2/' variables.tf
 
+    - name: Terraform Init again
+      run: terraform init
+
     - name: Terraform Plan
       run: terraform plan
 
