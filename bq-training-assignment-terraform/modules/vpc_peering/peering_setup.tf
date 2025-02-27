@@ -1,3 +1,7 @@
+provider "aws" {
+  region = var.requester_region
+}
+
 resource "aws_vpc_peering_connection" "peering" {
   vpc_id      = var.requester_id
   peer_vpc_id = var.accepter_id
