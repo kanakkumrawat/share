@@ -1,5 +1,6 @@
 module "vpc_requester" {
   source                  = "./modules/vpc"
+  aws_region              = var.aws_region_requester
   vpc_cidr                = var.vpc_cidr_requester
   private_subnet_cidr     = var.private_subnet_cidr_requester
   public_subnet_cidr      = var.public_subnet_cidr_requester
