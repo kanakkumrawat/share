@@ -28,12 +28,12 @@ jobs:
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
-
-    - name: Terraform Workspace(dev)
-      run: terraform workspace select dev || terraform workspace new dev
       
     - name: Terraform Init
       run: terraform init
+
+    - name: Terraform Workspace(dev)
+      run: terraform workspace select dev || terraform workspace new dev
 
     - name: Terraform Plan
       run: terraform plan
@@ -64,6 +64,9 @@ jobs:
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
 
+    - name: Terraform Init
+      run: terraform init
+
     - name: Terraform Workspace(dev)
       run: terraform workspace select staging || terraform workspace new staging
 
@@ -72,9 +75,6 @@ jobs:
 
     - name: Terraform Region for requester
       run: sed -i '/variable "aws_region_requester"/,/}/s/\(default = "\)[^"]*\(".*\)/\1us-west-2\2/' main.tf
-      
-    - name: Terraform Init
-      run: terraform init
 
     - name: Terraform Plan
       run: terraform plan
