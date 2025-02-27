@@ -42,7 +42,7 @@ jobs:
       run: terraform validate
 
   terraform-staging:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
