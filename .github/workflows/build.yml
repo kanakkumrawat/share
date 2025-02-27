@@ -67,7 +67,7 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
-    - name: Terraform Workspace(dev)
+    - name: Terraform Workspace(staging)
       run: terraform workspace select staging || terraform workspace new staging
 
     - name: Terraform Region for accepeter
