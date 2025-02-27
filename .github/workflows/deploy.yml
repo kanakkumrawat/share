@@ -96,17 +96,17 @@ jobs:
     - name: Terraform Workspace(staging)
       run: terraform workspace select staging || terraform workspace new staging
 
-    - name: Terraform Plan
-      run: terraform plan -var="aws_region_accepter=us-west-1" -var="aws_region_requester=us-west-2"
-
     - name: Terraform Validate
-      run: terraform validate
+      run: terraform validate -var-file="staging-variables.tf"
+
+    - name: Terraform Plan
+      run: terraform plan -var-file="staging-variables.tf"
 
     - name: Terraform Apply
-      run: terraform apply -var="aws_region_accepter=us-west-1" -var="aws_region_requester=us-west-2" --auto-approve
+      run: terraform apply -var-file="staging-variables.tf"
 
     - name: Terraform Destroy
-      run: terraform destroy -var="aws_region_accepter=us-west-1" -var="aws_region_requester=us-west-2" --auto-approve
+      run: terraform destroy -var-file="staging-variables.tf"
 
 
 
