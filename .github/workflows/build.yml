@@ -70,23 +70,13 @@ jobs:
     - name: Terraform Workspace(staging)
       run: terraform workspace select staging || terraform workspace new staging
 
-    - name: Show variables.tf file
-      run: cat variables.tf
-
-    - name: Show variables.tf file
-      run: cat variables.tf
-
-    - name: Terraform Init again
-      run: terraform init
+    - name: Terraform Validate
+      run: terraform validate -var-file="staging-variables.tf"
 
     - name: Terraform Plan with dynamic regions
-      run: terraform plan -var="aws_region_accepter=us-west-1" -var="aws_region_requester=us-west-2"
+      run: terraform plan -var-file="staging-variables.tf"
       
-    - name: Show variables.tf file
-      run: cat variables.tf
 
-    - name: Terraform Validate
-      run: terraform validate
 
 
 # name: Terraform Build
