@@ -82,6 +82,9 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
 
+    - name: Show variables.tf file
+      run: cat variables.tf
+
     - name: Terraform Validate
       run: terraform validate
 
