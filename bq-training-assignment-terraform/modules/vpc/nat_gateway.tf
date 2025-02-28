@@ -9,15 +9,7 @@ resource "aws_nat_gateway" "vpc_nat" {
   allocation_id = aws_eip.nat_eip[count.index].id
   tags = {
     description = "Name your nat gateway"
-    Name        = "nat-gateway-${count.index + 1}"
-  }
-}
-
-resource "aws_internet_gateway" "vpc_igw" {
-  vpc_id = aws_vpc.vpc_name.id
-  tags = {
-    description = "Name your internet gateway"
-    Name        = var.igw_name
+    Name        = "nat-gateway-${local.az_names[count.index % local.az_count]}-${count.index + 1}"
   }
 }
 
