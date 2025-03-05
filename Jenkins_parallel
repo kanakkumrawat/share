@@ -1,0 +1,139 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Run in Parallel Executors') {
+            parallel {
+                stage('Executor 1 Tasks') {
+                    agent any
+
+                    stages {
+                        stage('Git Checkout') {
+                            steps {
+                                script {
+                                    checkout([$class: 'GitSCM',
+                                        branches: [[name: 'main']],
+                                        userRemoteConfigs: [[url: "https://github.com/kanakkumrawat/share.git"]]])
+                                }
+                            }
+                        }
+
+                        stage('Terraform Init') {
+                            steps {
+                                sh '''
+                                echo " Terraform Init Running ... "
+                                cd "bq-training-assignment-terraform"
+                                terraform init
+                                '''
+                            }
+                        }
+
+                        stage('Terraform Plan') {
+                            steps {
+                                sh '''
+                                echo " Terraform Plan Running ... "
+                                cd "bq-training-assignment-terraform"
+                                terraform plan -out=tfplan
+                                '''
+                            }
+                        }
+
+                        stage('Terraform Apply') {
+                            steps {
+                                sh '''
+                                echo " Terraform Apply Running ... "
+                                cd "bq-training-assignment-terraform"
+                                terraform apply --auto-approve
+                                '''
+                            }
+                        }
+
+                        stage('Terraform Destroy') {
+                            steps {
+                                sh '''
+                                echo " Terraform Destroy Running ... "
+                                cd "bq-training-assignment-terraform"
+                                terraform destroy --auto-approve
+                                '''
+                            }
+                        }
+                    }
+                }
+
+                stage('Executor 2 Tasks') {
+                    agent any
+
+                    stages {
+                        stage('Git Checkout') {
+                            steps {
+                                script {
+                                    checkout([$class: 'GitSCM',
+                                        branches: [[name: 'main']],
+                                        userRemoteConfigs: [[url: "https://github.com/kanakkumrawat/share.git"]]])
+                                }
+                            }
+                        }
+
+                        stage('Terraform Init') {
+                            steps {
+                                sh '''
+                                echo " Terraform Init Running ... "
+                                cd "bq-training-assignment-terraform"
+                                terraform init"
+                                '''
+                            }
+                        }
+
+                        stage('Terraform Plan') {
+                            steps {
+                                sh '''
+                                echo " Terraform Plan Running ... "
+                                cd "bq-training-assignment-terraform"
+                                terraform plan -var="aws_region_requester=us-west-1" -var="aws_region_accepter=us-west-2"
+                                '''
+                            }
+                        }
+
+                        stage('Terraform Apply') {
+                            steps {
+                                sh '''
+                                echo " Terraform Apply Running ... "
+                                cd "bq-training-assignment-terraform"
+                                terraform apply -var="aws_region_requester=us-west-1" -var="aws_region_accepter=us-west-2" --auto-approve
+                                '''
+                            }
+                        }
+
+                        stage('Terraform Destroy') {
+                            steps {
+                                sh '''
+                                echo " Terraform Destroy Running ... "
+                                cd "bq-training-assignment-terraform"
+                                terraform destroy -var="aws_region_requester=us-west-1" -var="aws_region_accepter=us-west-2" --auto-approve
+                                '''
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            sh '''
+            echo " Build Failed! Terraform Destroy Running (After Failure) ... "
+            cd "bq-training-assignment-terraform"
+            terraform destroy -var="aws_region_requester=us-west-1" -var="aws_region_accepter=us-west-2" --auto-approve
+            '''
+        }
+        success {
+            echo "Build Succeeded: Terraform applied successfully!"
+        }
+        always {
+            sh '''
+            echo " Work done! Exiting "
+            '''
+        }
+    }
+}
