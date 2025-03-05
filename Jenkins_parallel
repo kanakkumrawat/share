@@ -82,7 +82,7 @@ pipeline {
                                 sh '''
                                 echo " Terraform Init Running ... "
                                 cd "bq-training-assignment-terraform"
-                                terraform init"
+                                terraform init
                                 '''
                             }
                         }
