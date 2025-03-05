@@ -8,7 +8,7 @@ pipeline{
                     checkout([       // Git steps for checkout by git plugin
                         $class: 'GitSCM',
                         branches: [[name: '*/main']],  // Change branch if needed
-                        userRemoteConfigs: [[url: "https://github.com/bq-raghav-61/Testing_bq",
+                        userRemoteConfigs: [[url: "https://github.com/kanakkumrawat/share.git",
                                             credentialsId: 'JenkinsToken' 
                                     ]] // Change to your repo
                         // extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${TF_WORKING_DIR} ]] To clone inside a diff directory instead of default workspace 
