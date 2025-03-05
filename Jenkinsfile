@@ -9,7 +9,7 @@ pipeline{
                         $class: 'GitSCM',
                         branches: [[name: '*/main']],  // Change branch if needed
                         userRemoteConfigs: [[url: "https://github.com/kanakkumrawat/share.git",
-                                            credentialsId: 'JenkinsToken' 
+                                            // credentialsId: 'JenkinsToken' 
                                     ]] // Change to your repo
                         // extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${TF_WORKING_DIR} ]] To clone inside a diff directory instead of default workspace 
                     ])
