@@ -1,5 +1,8 @@
 pipeline{
     agent any
+        environment {
+            PATH = "/usr/local/bin:$PATH"  // Add the location of terraform to PATH
+        }
         stages{
           
             stage('Git Checkout'){
